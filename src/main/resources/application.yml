@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.PostgreSQL94Dialect
+
+  datasource:
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB:tribalwars}?currentSchema=tribalwars_owner"
+    username: ${DB_USER:tribalwars_owner}
+    password: ${DB_PASSWORD:tribalwars_owner}
+    hikari:
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:60000}
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:5}
+
+  flyway:
+    url: ${spring.datasource.url}
+    user:  ${FLYWAY_USER:tribalwars_owner}
+    password: ${FLYWAY_PASSWORD:tribalwars_owner}
+    table: schema_version
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        exclude: "*"
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+  # /actuator/info endpoint config
+  # Git information is also shown, based on the git.properties file produced during the build and packaged with the app
+  info:
+    git:
+      mode: full
