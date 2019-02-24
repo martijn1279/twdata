@@ -9,13 +9,13 @@ interface WorldCrudRepository : CrudRepository<World, String> {
     fun findWorldByWorldName(worldName: String): Optional<World>
 }
 
-interface PlayerCrudRepository : CrudRepository<Player, String> {
+interface PlayerCrudRepository : CrudRepository<Player, Int> {
     fun findPlayersByWorldId(worldId: String): Iterable<Player>
     fun findPlayerByWorldIdAndPlayerId(worldId: String, playerId: Int): Optional<Player>
     fun findPlayerByWorldIdAndName(worldId: String, name: String): Optional<Player>
 }
 
-interface TribeCrudRepository : CrudRepository<Tribe, String> {
+interface TribeCrudRepository : CrudRepository<Tribe, Int> {
     fun findTribesByWorldId(worldId: String): Iterable<Tribe>
     fun findTribeByWorldIdAndTribeId(worldId: String, tribeId: Int): Optional<Tribe>
     fun findTribeByWorldIdAndTag(worldId: String, tag: String): Optional<Tribe>
