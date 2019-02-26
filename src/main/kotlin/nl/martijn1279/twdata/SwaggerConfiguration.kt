@@ -22,4 +22,14 @@ class SwaggerConfiguration {
                     .basePackage("nl.martijn1279.twdata.controller.v1"))
             .paths(PathSelectors.regex("/.*"))
             .build()
+
+    @Bean
+    fun apiv2(): Docket = Docket(DocumentationType.SWAGGER_2)
+            .groupName("V2")
+            .useDefaultResponseMessages(false)
+            .select()
+            .apis(RequestHandlerSelectors
+                    .basePackage("nl.martijn1279.twdata.controller.v2"))
+            .paths(PathSelectors.regex("/.*"))
+            .build()
 }
