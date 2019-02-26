@@ -25,7 +25,7 @@ class PlayerControllerV1(@Autowired private val playerCrudRepository: PlayerCrud
     @RequestMapping(value = ["/getPlayersByWordlId/{worldId}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
     fun getPlayersByWordlId(
             @PathVariable worldId: String
-    ): List<Player>? =
+    ): List<Player> =
             playerCrudRepository.findPlayersByWorldId(worldId).toList().orNotFound()
 
 
@@ -35,7 +35,7 @@ class PlayerControllerV1(@Autowired private val playerCrudRepository: PlayerCrud
     fun getPlayerByWorldIdAndPlayerId(
             @PathVariable worldId: String,
             @PathVariable playerId: Int
-    ): Player? =
+    ): Player =
             playerCrudRepository.findPlayerByWorldIdAndPlayerId(worldId, playerId).orNotFound()
 
 
@@ -45,7 +45,7 @@ class PlayerControllerV1(@Autowired private val playerCrudRepository: PlayerCrud
     fun getPLayerByWorldIdAndPlayerName(
             @PathVariable worldId: String,
             @PathVariable playerName: String
-    ): Player? =
+    ): Player =
             playerCrudRepository.findPlayerByWorldIdAndName(worldId, playerName).orNotFound()
 
 

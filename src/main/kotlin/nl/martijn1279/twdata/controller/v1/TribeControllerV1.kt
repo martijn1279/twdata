@@ -25,7 +25,7 @@ class TribeControllerV1(@Autowired private val tribeCrudRepository: TribeCrudRep
     @RequestMapping(value = ["/getTribesByWorldId/{worldId}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
     fun getTribesByWorldId(
             @PathVariable worldId: String
-    ): List<Tribe>? =
+    ): List<Tribe> =
             tribeCrudRepository.findTribesByWorldId(worldId).toList().orNotFound()
 
 
@@ -35,7 +35,7 @@ class TribeControllerV1(@Autowired private val tribeCrudRepository: TribeCrudRep
     fun getTribeByWorldIdAndTribeId(
             @PathVariable worldId: String,
             @PathVariable tribeId: Int
-    ): Tribe? =
+    ): Tribe =
             tribeCrudRepository.findTribeByWorldIdAndTribeId(worldId, tribeId).orNotFound()
 
 
@@ -45,7 +45,7 @@ class TribeControllerV1(@Autowired private val tribeCrudRepository: TribeCrudRep
     fun getTribeByWorldIdAndTag(
             @PathVariable worldId: String,
             @PathVariable tag: String
-    ): Tribe? =
+    ): Tribe =
             tribeCrudRepository.findTribeByWorldIdAndTag(worldId, tag).orNotFound()
 
     @ApiOperation(value = "Get a tribe by given 'worldId' and 'name'")
@@ -54,6 +54,6 @@ class TribeControllerV1(@Autowired private val tribeCrudRepository: TribeCrudRep
     fun getTribeByWorldIdAndName(
             @PathVariable worldId: String,
             @PathVariable name: String
-    ): Tribe? =
+    ): Tribe =
             tribeCrudRepository.findTribeByWorldIdAndName(worldId, name).orNotFound()
 }

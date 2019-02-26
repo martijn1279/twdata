@@ -26,7 +26,7 @@ class VillageControllerV1(@Autowired private val villageCrudRepository: VillageC
     fun getVillagesByWorldIdAndPlayerId(
             @PathVariable worldId: String,
             @PathVariable playerId: Int
-    ): List<Village>? =
+    ): List<Village> =
             villageCrudRepository.findVillagesByWorldIdAndPlayerId(worldId, playerId).toList().orNotFound()
 
 
@@ -36,7 +36,7 @@ class VillageControllerV1(@Autowired private val villageCrudRepository: VillageC
     fun getVillageByWorldIdAndVillageId(
             @PathVariable worldId: String,
             @PathVariable villageId: Int
-    ): Village? =
+    ): Village =
             villageCrudRepository.findVillageByWorldIdAndVillageId(worldId, villageId).orNotFound()
 
 
@@ -46,16 +46,16 @@ class VillageControllerV1(@Autowired private val villageCrudRepository: VillageC
     fun getVillageByWorldIdAndName(
             @PathVariable worldId: String,
             @PathVariable name: String
-    ): Village? =
+    ): Village =
             villageCrudRepository.findVillageByWorldIdAndName(worldId, name).orNotFound()
 
     @ApiOperation(value = "Get a village by given 'worldId' and 'x' and 'y'")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
-    @RequestMapping(value = ["/getVillageByWorldIdAndXAndY/{worldId}/{x}/y}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
+    @RequestMapping(value = ["/getVillageByWorldIdAndXAndY/{worldId}/{x}/{y}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
     fun getVillageByWorldIdAndXAndY(
             @PathVariable worldId: String,
             @PathVariable x: Int,
             @PathVariable y: Int
-    ): Village? =
+    ): Village =
             villageCrudRepository.findVillageByWorldIdAndXAndY(worldId, x, y).orNotFound()
 }

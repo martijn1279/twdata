@@ -23,7 +23,7 @@ class WorldControllerV1(@Autowired private val worldCrudRepository: WorldCrudRep
     @ApiOperation(value = "get a list of all the worlds")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
     @RequestMapping(value = ["/getWorlds"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
-    fun getWorlds(): List<World>? =
+    fun getWorlds(): List<World> =
             worldCrudRepository.findAll().toList().orNotFound()
 
 
@@ -32,7 +32,7 @@ class WorldControllerV1(@Autowired private val worldCrudRepository: WorldCrudRep
     @RequestMapping(value = ["/getWorldByWorldId/{worldId}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
     fun getWorldByWorldId(
             @PathVariable worldId: String
-    ): World? =
+    ): World =
             worldCrudRepository.findById(worldId).orNotFound()
 
 
@@ -41,6 +41,6 @@ class WorldControllerV1(@Autowired private val worldCrudRepository: WorldCrudRep
     @RequestMapping(value = ["/getWorldByWorldName/{worldName}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
     fun getWorldByWorldName(
             @PathVariable worldName: String
-    ): World? = worldCrudRepository.findWorldByWorldName(worldName).orNotFound()
+    ): World = worldCrudRepository.findWorldByWorldName(worldName).orNotFound()
 
 }

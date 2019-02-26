@@ -6,7 +6,6 @@ import nl.martijn1279.twdata.error.ServiceException
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import java.net.URLDecoder
@@ -16,17 +15,17 @@ import kotlin.collections.ArrayList
 
 
 @Component
-class SyncWorldData(@Autowired private val worldRepository: WorldCrudRepository,
-                    @Autowired private val playerRepository: PlayerCrudRepository,
-                    @Autowired private val tribeRepository: TribeCrudRepository,
-                    @Autowired private val emf: EntityManagerFactory) {
+class SyncWorldDataDB(@Autowired private val worldRepository: WorldCrudRepository,
+                      @Autowired private val playerRepository: PlayerCrudRepository,
+                      @Autowired private val tribeRepository: TribeCrudRepository,
+                      @Autowired private val emf: EntityManagerFactory) {
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(SyncWorldData::class.java)
+        private val LOG = LoggerFactory.getLogger(SyncWorldDataDB::class.java)
         private const val BATCH_SIZE = 150
     }
 
-    @Scheduled(fixedRate = 3600000)
+    //    @Scheduled(fixedRate = 3600000)
     fun syncTribalwarsInfo() {
         LOG.info("Begin sync world data")
         val worlds = getAllActiveWorlds()

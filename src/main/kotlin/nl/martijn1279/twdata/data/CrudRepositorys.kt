@@ -29,12 +29,16 @@ interface VillageCrudRepository : CrudRepository<Village, Int> {
     fun findVillageByWorldIdAndXAndY(worldId: String, x: Int, y: Int): Optional<Village>
 }
 
-fun <E> Optional<E>.orNotFound(): E? {
+fun <E> Optional<E>.orNotFound(): E {
     if (this.isPresent) return this.get()
     throw ServiceException(ErrorCode.NON_FOUND)
 }
 
-fun <E> List<E>.orNotFound(): List<E>? {
+fun <E> E?.orNotFound(): E {
+    return this ?: throw ServiceException(ErrorCode.NON_FOUND)
+}
+
+fun <E> List<E>.orNotFound(): List<E> {
     if (this.isEmpty()) throw ServiceException(ErrorCode.NON_FOUND)
     return this
 }
