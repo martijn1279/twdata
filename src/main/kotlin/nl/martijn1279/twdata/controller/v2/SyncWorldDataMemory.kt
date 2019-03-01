@@ -34,6 +34,7 @@ class SyncWorldDataMemory() {
         }
         worlds.clear()
         worlds.addAll(tmp.asIterable())
+        System.gc()
         LOG.info("Finished sync world data")
     }
 

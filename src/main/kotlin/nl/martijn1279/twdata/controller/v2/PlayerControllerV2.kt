@@ -21,8 +21,8 @@ class PlayerControllerV2() {
 
     @ApiOperation(value = "Get a list of all the players with the given world")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
-    @RequestMapping(value = ["/getPlayersByWordlId/{worldId}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
-    fun getPlayersByWordlId(
+    @RequestMapping(value = ["/getPlayersByWorldId/{worldId}"], method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON])
+    fun getPlayersByWorldId(
             @PathVariable worldId: String
     ): List<PlayerNew> =
             SyncWorldDataMemory.worlds
