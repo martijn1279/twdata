@@ -29,7 +29,11 @@ data class TribeNew(
         var villages: Int,
         var points: Int,
         var allPoints: Int,
-        var rank: Int)
+        var rank: Int) {
+
+    @JsonIgnore
+    val players = arrayListOf<PlayerNew>()
+}
 
 data class VillageNew(var villageId: Int,
                       var name: String,

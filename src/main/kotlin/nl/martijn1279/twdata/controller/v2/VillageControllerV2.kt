@@ -4,11 +4,9 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import nl.martijn1279.twdata.data.VillageCrudRepository
 import nl.martijn1279.twdata.data.memory.VillageNew
 import nl.martijn1279.twdata.error.ErrorCode
 import nl.martijn1279.twdata.error.ServiceException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -18,7 +16,7 @@ import javax.ws.rs.core.MediaType
 @RestController
 @RequestMapping("/v2/village")
 @Api(description = "Operations pertaining to villages")
-class VillageControllerV2(@Autowired private val villageCrudRepository: VillageCrudRepository) {
+class VillageControllerV2 {
 
 
     @ApiOperation(value = "Get a list of all the villages with the given 'worldId' and 'playerId'")

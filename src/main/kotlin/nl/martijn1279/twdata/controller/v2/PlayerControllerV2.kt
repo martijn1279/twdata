@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType
 @RestController
 @RequestMapping("/v2/player")
 @Api(description = "Operations pertaining to players")
-class PlayerControllerV2() {
+class PlayerControllerV2 {
 
     @ApiOperation(value = "Get a list of all the players with the given world")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))

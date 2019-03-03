@@ -10,13 +10,18 @@ import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.net.URLDecoder
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Component
-class SyncWorldDataMemory() {
+@RestController
+@RequestMapping("/v2/syncWorldDataDB")
+class SyncWorldDataMemory {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(SyncWorldDataMemory::class.java)
@@ -24,6 +29,7 @@ class SyncWorldDataMemory() {
     }
 
     @Scheduled(fixedRate = 3600000)
+    @RequestMapping(value = ["/syncTribalwarsInfo"], method = [RequestMethod.GET])
     fun syncTribalwarsInfo() {
         LOG.info("Begin sync world data")
         val tmp = getAllActiveWorlds().map { WorldNew(it.key, it.value) }
@@ -38,25 +44,16 @@ class SyncWorldDataMemory() {
         LOG.info("Finished sync world data")
     }
 
-    private fun syncWorld(activeWorlds: HashMap<String, String>) {
-        val tmp = arrayListOf<WorldNew>()
-        activeWorlds.forEach {
-            tmp.add(WorldNew(it.key, it.value))
-        }
-        activeWorlds.map { WorldNew(it.key, it.value) }
-        LOG.info("Synced active worlds")
-    }
-
     private fun syncTribeInfo(world: WorldNew) {
         "https://${world.worldId}.tribalwars.nl/map/ally.txt"
                 .getData()
                 .let { data ->
-                    val tmp = arrayListOf<TribeNew>()
+                    val tmpList = arrayListOf(TribeNew(0,"No tribe","NON",0,0,0,0,0))
                     data.forEach {
-                        tmp.add(TribeNew(it[0].toInt(), it[1], it[2], it[3].toInt(), it[4].toInt(), it[5].toInt(), it[6].toInt(), it[7].toInt()))
+                        tmpList.add(TribeNew(it[0].toInt(), it[1], it[2], it[3].toInt(), it[4].toInt(), it[5].toInt(), it[6].toInt(), it[7].toInt()))
                     }
                     world.tribes.clear()
-                    world.tribes.addAll(tmp.asIterable())
+                    world.tribes.addAll(tmpList.asIterable())
                 }
         LOG.info("Synced tribeinfo: ${world.worldId}")
     }
@@ -65,12 +62,17 @@ class SyncWorldDataMemory() {
         "https://${world.worldId}.tribalwars.nl/map/player.txt"
                 .getData()
                 .let { data ->
-                    val tmp = arrayListOf(PlayerNew(0, "BarBaar", 0, 0, 0))
-                    data.forEach {
-                        tmp.add(PlayerNew(it[0].toInt(), it[1], it[2].toInt(), it[4].toInt(), it[5].toInt()))
+                    val tmpList = arrayListOf(PlayerNew(0, "BarBaar", 0, 0, 0))
+                    data.forEach { p ->
+                        PlayerNew(p[0].toInt(), p[1], p[2].toInt(), p[4].toInt(), p[5].toInt()).also { player ->
+                            world.tribes.find { it.tribeId == p[2].toInt() }
+                                    ?.players?.add(player)
+                                    ?: error("")
+                            tmpList.add(player)
+                        }
                     }
                     world.players.clear()
-                    world.players.addAll(tmp.asIterable())
+                    world.players.addAll(tmpList.asIterable())
                 }
         LOG.info("Synced playerinfo: ${world.worldId}")
     }
@@ -81,10 +83,12 @@ class SyncWorldDataMemory() {
                 .let { data ->
                     val tmp = arrayListOf<VillageNew>()
                     data.forEach { v ->
-                        world.players.find { it.playerId == v[4].toInt() }
-                                ?.villages?.add(VillageNew(v[0].toInt(), v[1], v[2].toShort(), v[3].toShort(), v[4].toInt(), v[5].toInt(), v[6].toInt()))
-                                ?: error("")
-                        tmp.add(VillageNew(v[0].toInt(), v[1], v[2].toShort(), v[3].toShort(), v[4].toInt(), v[5].toInt(), v[6].toInt()))
+                        VillageNew(v[0].toInt(), v[1], v[2].toShort(), v[3].toShort(), v[4].toInt(), v[5].toInt(), v[6].toInt()).also { village ->
+                            world.players.find { it.playerId == v[4].toInt() }
+                                    ?.villages?.add(village)
+                                    ?: error("")
+                            tmp.add(village)
+                        }
                     }
                     world.villages.clear()
                     world.villages.addAll(tmp.asIterable())

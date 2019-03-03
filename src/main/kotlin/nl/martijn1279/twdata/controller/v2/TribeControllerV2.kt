@@ -4,12 +4,10 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import nl.martijn1279.twdata.data.TribeCrudRepository
 import nl.martijn1279.twdata.data.memory.TribeNew
 import nl.martijn1279.twdata.data.orNotFound
 import nl.martijn1279.twdata.error.ErrorCode
 import nl.martijn1279.twdata.error.ServiceException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -19,7 +17,7 @@ import javax.ws.rs.core.MediaType
 @RestController
 @RequestMapping("/v2/tribe")
 @Api(description = "Operations pertaining to tribes")
-class TribeControllerV2(@Autowired private val tribeCrudRepository: TribeCrudRepository) {
+class TribeControllerV2 {
 
 
     @ApiOperation(value = "Get a list of all the tribe with the given world")
