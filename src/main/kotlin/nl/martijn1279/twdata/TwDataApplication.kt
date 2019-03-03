@@ -1,6 +1,7 @@
 package nl.martijn1279.twdata
 
 import nl.martijn1279.twdata.controller.util.RequestLogFilter
+import nl.martijn1279.twdata.controller.v3.Query
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.boot.web.servlet.FilterRegistrationBean
@@ -10,7 +11,13 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableScheduling
-class TwDataApplication
+class TwDataApplication{
+
+    @Bean
+    fun query(): Query {
+        return Query()
+    }
+}
 
 fun main(args: Array<String>) {
     runApplication<TwDataApplication>(*args)

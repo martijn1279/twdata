@@ -22,9 +22,11 @@ class RequestLogFilter : OncePerRequestFilter() {
     @Autowired
     lateinit var userRepository: UserRepository
 
+    val excludedList = listOf("swagger", "vendor", "subscriptions", "favicon.ico")
+
     @Throws(IOException::class, ServletException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        if (request.servletPath != "/favicon.ico" && !request.servletPath.contains("swagger")) {
+        if (!request.servletPath.containsList(excludedList)) {
             val requestString = "${request.remoteAddr} => ${request.servletPath} (${request.method}) ${ObjectMapper().writeValueAsString(request.parameterMap.filter { it.key != "callback" })} "
             LoggerFactory.getLogger("RequestLogFilter").info(requestString)
             userRepository.findUser(request.remoteAddr)
@@ -43,4 +45,12 @@ class RequestLogFilter : OncePerRequestFilter() {
         }
         chain.doFilter(request, response)
     }
+
+    private fun String.containsList(excludeList: List<String>): Boolean {
+        excludeList.forEach {
+            if (this.contains(it)) return true
+        }
+        return false
+    }
+
 }

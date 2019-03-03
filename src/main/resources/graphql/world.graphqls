@@ -1,0 +1,8 @@
+type World {
+    worldId: String!
+    worldName: String!
+}
+
+type Query {
+    getWorlds: [World]!
+}
