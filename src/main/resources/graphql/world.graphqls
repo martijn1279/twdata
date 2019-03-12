@@ -1,8 +1,78 @@
 type World {
     worldId: String!
     worldName: String!
+
+    # get a list of tribes
+    tribes: [Tribe]!
+    # get the first tribe of filtered list by the given parameters.
+    tribe(tribeId: Int, name: String, tag: String, membersCount: Int, villages: Int, points: Int, allPoints: Int, rank: Int): Tribe
+
+    # get a list of players
+    players: [Player]
+    # get the first player of filtered list by the given parameters.
+    player(playerId: Int, name: String, tribeId: Int, points: Int, rank: Int): Player
+
+    # get a list of villages
+    villages: [Village]!
+    # get the first village of filtered list by the given parameters.
+    village(villageId: Int, name: String, x: Int, y: Int, playerId: Int, points: Int, rank: Int): Village
+}
+
+type Tribe{
+    tribeId: Int!
+    name: String!
+    tag: String!
+    membersCount: Int!
+    villages: Int!
+    points: Int!
+    allPoints: Int!
+    rank: Int!
+
+    # get a list of players
+    players: [Player]
+    # get the first player of filtered list by the given parameters.
+    player(playerId: Int, name: String, tribeId: Int, points: Int, rank: Int): Player
+}
+
+type Player{
+    playerId: Int!
+    name: String!
+    tribeId: Int!
+    points: Int!
+    rank: Int!
+
+    # get a list of villages
+    villages: [Village]!
+    # get the first village of filtered list by the given parameters.
+    village(villageId: Int, name: String, x: Int, y: Int, playerId: Int, points: Int, rank: Int): Village
+}
+
+type Village{
+    villageId: Int!
+    name: String!
+    x: Int!
+    y: Int!
+    playerId: Int!
+    points: Int!
+    rank: Int!
 }
 
 type Query {
-    getWorlds: [World]!
+    worlds: [World]
+    worldByWorldId(worldId: String!): World
+    worldByWorldName(worldName: String!): World
+
+    tribesByWorldId(worldId: String!): [Tribe]
+    tribeByWorldIdAndTribeId(worldId: String!,tribeId: Int!): Tribe
+    tribeByWorldIdAndTag(worldId: String!,tag: String!): Tribe
+    tribeByWorldIdAndName(worldId: String!,name: String!): Tribe
+
+    playersByWorldId(worldId: String!): [Player]
+    playerByWorldIdAndPlayerId(worldId: String!, playerId: Int!): Player
+    playerByWorldIdAndPlayerName(worldId: String!, playerName: String!): Player
+
+    villagesByWorldIdAndPlayerId(worldId: String!, playerId: Int!): [Village]
+    villageByWorldIdAndVillageId(worldId: String!, villageId: Int!): Village
+    villageByWorldIdAndName(worldId: String!, name: String!): Village
+    villageByWorldIdAndXAndY(worldId: String!, x: Int, y: Int!): Village
 }

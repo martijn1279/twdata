@@ -69,5 +69,3 @@ management:
 logging:
   level:
     org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR
-
-BATCH_SIZE: 150

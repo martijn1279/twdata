@@ -1,38 +1,26 @@
 package nl.martijn1279.twdata.controller.v2
 
-import nl.martijn1279.twdata.data.memory.PlayerNew
-import nl.martijn1279.twdata.data.memory.TribeNew
-import nl.martijn1279.twdata.data.memory.VillageNew
-import nl.martijn1279.twdata.data.memory.WorldNew
-import nl.martijn1279.twdata.error.ErrorCode
-import nl.martijn1279.twdata.error.ServiceException
 import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.RestTemplate
 import java.net.URLDecoder
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Component
-@RestController
-@RequestMapping("/v2/syncWorldDataDB")
 class SyncWorldDataMemory {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(SyncWorldDataMemory::class.java)
-        val worlds = arrayListOf<WorldNew>()
+        val worlds = arrayListOf<World>()
     }
 
     @Scheduled(fixedRate = 3600000)
-    @RequestMapping(value = ["/syncTribalwarsInfo"], method = [RequestMethod.GET])
-    fun syncTribalwarsInfo() {
+    private fun syncTribalwarsInfo() {
         LOG.info("Begin sync world data")
-        val tmp = getAllActiveWorlds().map { WorldNew(it.key, it.value) }
+        val tmp = getAllActiveWorlds().map { World(it.key, it.value) }
         tmp.forEach { world ->
             syncTribeInfo(world)
             syncPlayerInfo(world)
@@ -44,13 +32,13 @@ class SyncWorldDataMemory {
         LOG.info("Finished sync world data")
     }
 
-    private fun syncTribeInfo(world: WorldNew) {
+    private fun syncTribeInfo(world: World) {
         "https://${world.worldId}.tribalwars.nl/map/ally.txt"
                 .getData()
                 .let { data ->
-                    val tmpList = arrayListOf(TribeNew(0,"No tribe","NON",0,0,0,0,0))
+                    val tmpList = arrayListOf(Tribe(world.worldId, 0, "No tribe", "NON", 0, 0, 0, 0, 0))
                     data.forEach {
-                        tmpList.add(TribeNew(it[0].toInt(), it[1], it[2], it[3].toInt(), it[4].toInt(), it[5].toInt(), it[6].toInt(), it[7].toInt()))
+                        tmpList.add(Tribe(world.worldId, it[0].toInt(), it[1], it[2], it[3].toInt(), it[4].toInt(), it[5].toInt(), it[6].toInt(), it[7].toInt()))
                     }
                     world.tribes.clear()
                     world.tribes.addAll(tmpList.asIterable())
@@ -58,13 +46,13 @@ class SyncWorldDataMemory {
         LOG.info("Synced tribeinfo: ${world.worldId}")
     }
 
-    private fun syncPlayerInfo(world: WorldNew) {
+    private fun syncPlayerInfo(world: World) {
         "https://${world.worldId}.tribalwars.nl/map/player.txt"
                 .getData()
                 .let { data ->
-                    val tmpList = arrayListOf(PlayerNew(0, "BarBaar", 0, 0, 0))
+                    val tmpList = arrayListOf(Player(0, "BarBaar", 0, 0, 0))
                     data.forEach { p ->
-                        PlayerNew(p[0].toInt(), p[1], p[2].toInt(), p[4].toInt(), p[5].toInt()).also { player ->
+                        Player(p[0].toInt(), p[1], p[2].toInt(), p[4].toInt(), p[5].toInt()).also { player ->
                             world.tribes.find { it.tribeId == p[2].toInt() }
                                     ?.players?.add(player)
                                     ?: error("")
@@ -77,13 +65,13 @@ class SyncWorldDataMemory {
         LOG.info("Synced playerinfo: ${world.worldId}")
     }
 
-    private fun syncVillageInfo(world: WorldNew) {
+    private fun syncVillageInfo(world: World) {
         "https://${world.worldId}.tribalwars.nl/map/village.txt"
                 .getData()
                 .let { data ->
-                    val tmp = arrayListOf<VillageNew>()
+                    val tmp = arrayListOf<Village>()
                     data.forEach { v ->
-                        VillageNew(v[0].toInt(), v[1], v[2].toShort(), v[3].toShort(), v[4].toInt(), v[5].toInt(), v[6].toInt()).also { village ->
+                        Village(v[0].toInt(), v[1], v[2].toShort(), v[3].toShort(), v[4].toInt(), v[5].toInt(), v[6].toInt()).also { village ->
                             world.players.find { it.playerId == v[4].toInt() }
                                     ?.villages?.add(village)
                                     ?: error("")
@@ -109,8 +97,7 @@ class SyncWorldDataMemory {
 
     private fun String.getData() = RestTemplate().getForEntity(this, String::class.java).body
             ?.split()
-            ?: throw ServiceException(ErrorCode.UNKNOWN_ERROR)
-
+            ?: emptyList<List<String>>()
 
     private fun String.split(): ArrayList<List<String>> {
         val newLine = "\\n"

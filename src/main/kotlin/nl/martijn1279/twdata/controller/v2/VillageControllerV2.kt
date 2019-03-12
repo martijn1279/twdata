@@ -1,12 +1,10 @@
 package nl.martijn1279.twdata.controller.v2
 
+import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
-import nl.martijn1279.twdata.data.memory.VillageNew
-import nl.martijn1279.twdata.error.ErrorCode
-import nl.martijn1279.twdata.error.ServiceException
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -16,7 +14,7 @@ import javax.ws.rs.core.MediaType
 @RestController
 @RequestMapping("/v2/village")
 @Api(description = "Operations pertaining to villages")
-class VillageControllerV2 {
+class VillageControllerV2 : GraphQLQueryResolver {
 
 
     @ApiOperation(value = "Get a list of all the villages with the given 'worldId' and 'playerId'")
@@ -25,13 +23,13 @@ class VillageControllerV2 {
     fun getVillagesByWorldIdAndPlayerId(
             @PathVariable worldId: String,
             @PathVariable playerId: Int
-    ): List<VillageNew> =
+    ): List<Village>? =
             SyncWorldDataMemory.worlds
                     .find { it.worldId == worldId }
                     ?.players
                     ?.find { it.playerId == playerId }
                     ?.villages
-                    ?: throw ServiceException(ErrorCode.NON_FOUND)
+//                    ?: throw ServiceException(ErrorCode.NON_FOUND)
 
     @ApiOperation(value = "Get a village by given 'worldId' and 'villageId'")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
@@ -39,12 +37,12 @@ class VillageControllerV2 {
     fun getVillageByWorldIdAndVillageId(
             @PathVariable worldId: String,
             @PathVariable villageId: Int
-    ): VillageNew =
+    ): Village? =
             SyncWorldDataMemory.worlds
                     .find { it.worldId == worldId }
                     ?.villages
                     ?.find { it.villageId == villageId }
-                    ?: throw ServiceException(ErrorCode.NON_FOUND)
+//                    ?: throw ServiceException(ErrorCode.NON_FOUND)
 
 
     @ApiOperation(value = "Get a village by given 'worldId' and 'name'")
@@ -53,12 +51,12 @@ class VillageControllerV2 {
     fun getVillageByWorldIdAndName(
             @PathVariable worldId: String,
             @PathVariable name: String
-    ): VillageNew =
+    ): Village? =
             SyncWorldDataMemory.worlds
                     .find { it.worldId == worldId }
                     ?.villages
                     ?.find { it.name == name }
-                    ?: throw ServiceException(ErrorCode.NON_FOUND)
+//                    ?: throw ServiceException(ErrorCode.NON_FOUND)
 
     @ApiOperation(value = "Get a village by given 'worldId' and 'x' and 'y'")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
@@ -67,10 +65,10 @@ class VillageControllerV2 {
             @PathVariable worldId: String,
             @PathVariable x: Int,
             @PathVariable y: Int
-    ): VillageNew =
+    ): Village? =
             SyncWorldDataMemory.worlds
                     .find { it.worldId == worldId }
                     ?.villages
                     ?.find { it.x == x.toShort() && it.y == y.toShort() }
-                    ?: throw ServiceException(ErrorCode.NON_FOUND)
+//                    ?: throw ServiceException(ErrorCode.NON_FOUND)
 }

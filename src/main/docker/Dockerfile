@@ -10,7 +10,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
 COPY twdata.jar app.jar
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=24 \
-    CMD curl -k -o /dev/null --max-time 5 --silent --write-out '%{http_code}\n' https://localhost:8081/actuator/health | grep 200
+    CMD curl -k -o /dev/null --max-time 5 --silent --write-out '%{http_code}\n' http://localhost:8081/actuator/health | grep 200
 
 EXPOSE 8080 8081
 
