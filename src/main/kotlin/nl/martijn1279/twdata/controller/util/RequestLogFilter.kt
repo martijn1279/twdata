@@ -27,7 +27,7 @@ class RequestLogFilter : OncePerRequestFilter() {
     @Throws(IOException::class, ServletException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         if (!request.servletPath.containsList(excludedList)) {
-            val requestString = "${request.remoteAddr} => ${request.servletPath} (${request.method}) ${ObjectMapper().writeValueAsString(request.parameterMap.filter { it.key != "callback" })} "
+            val requestString = "${request.getHeader("x-forwarded-for")} => ${request.servletPath} (${request.method}) ${ObjectMapper().writeValueAsString(request.parameterMap.filter { it.key != "callback" })} "
             LoggerFactory.getLogger("RequestLogFilter").info(requestString)
             userRepository.findUser(request.remoteAddr)
                     ?.let {

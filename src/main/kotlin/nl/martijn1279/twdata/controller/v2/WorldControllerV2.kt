@@ -25,6 +25,12 @@ class WorldControllerV2 : GraphQLQueryResolver {
                     .worlds
 //                    .orNotFound()
 
+    @ApiOperation(value = "get a list of all the worlds")
+    @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
+    @RequestMapping(value = ["/getWorlds"], method = [RequestMethod.POST], produces = [MediaType.APPLICATION_JSON])
+    fun getWorldsPost(): List<World> =
+            SyncWorldDataMemory
+                    .worlds
 
     @ApiOperation(value = "Get a world by given 'worldId'")
     @ApiResponses(ApiResponse(code = 404, message = "No information was found for the request"))
