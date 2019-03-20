@@ -1,6 +1,9 @@
 package nl.martijn1279.twdata.controller.v2
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import nl.martijn1279.twdata.error.ErrorCode
+import nl.martijn1279.twdata.error.ServiceException
+import java.util.*
 
 
 data class World(val worldId: String, val worldName: String) {
@@ -43,3 +46,8 @@ data class Village(val villageId: Int,
                    val playerId: Int,
                    val points: Int,
                    val rank: Int)
+
+fun <E> List<E>.orNotFound(): List<E> {
+    if (this.isEmpty()) throw ServiceException(ErrorCode.NON_FOUND)
+    return this
+}

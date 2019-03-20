@@ -17,7 +17,7 @@ class SyncWorldDataMemory {
         val worlds = arrayListOf<World>()
     }
 
-//    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 3600000)
     private fun syncTribalwarsInfo() {
         LOG.info("Begin sync world data")
         val tmp = getAllActiveWorlds().map { World(it.key, it.value) }

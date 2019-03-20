@@ -14,16 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 class SwaggerConfiguration {
 
     @Bean
-    fun apiv1(): Docket = Docket(DocumentationType.SWAGGER_2)
-            .groupName("V1")
-            .useDefaultResponseMessages(false)
-            .select()
-            .apis(RequestHandlerSelectors
-                    .basePackage("nl.martijn1279.twdata.controller.v1"))
-            .paths(PathSelectors.regex("/.*"))
-            .build()
-
-    @Bean
     fun apiv2(): Docket = Docket(DocumentationType.SWAGGER_2)
             .groupName("V2")
             .useDefaultResponseMessages(false)
