@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
+import java.io.IOException
 import java.net.URLDecoder
 import java.util.*
 import kotlin.collections.ArrayList
@@ -86,12 +87,22 @@ class SyncWorldDataMemory {
 
     private fun getAllActiveWorlds(): HashMap<String, String> {
         val worlds = hashMapOf<String, String>()
-        val doc = Jsoup.connect("http://nl.twstats.com/").userAgent("Mozilla").get()
-        doc.getElementsByClass("world")
-                .filter { !it.parent().parent().text().contains("closed") }
-                .forEach {
-                    worlds[it.text().toLowerCase()] = it.parent().parent().child(1).child(0).text()
-                }
+        var hasSucceeded = false
+        var numberOfTriesRemaining = 3
+        while (!hasSucceeded && numberOfTriesRemaining > 0) {
+            try {
+                numberOfTriesRemaining--
+                val doc = Jsoup.connect("http://nl.twstats.com/").userAgent("Mozilla").get()
+                doc.getElementsByClass("world")
+                        .filter { !it.parent().parent().text().contains("closed") }
+                        .forEach {
+                            worlds[it.text().toLowerCase()] = it.parent().parent().child(1).child(0).text()
+                        }
+                hasSucceeded = true
+            } catch (e: IOException) {
+                LOG.warn("Cant Fetch Worlds. Message: ${e.message}")
+            }
+        }
         return worlds
     }
 
